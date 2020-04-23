@@ -1,5 +1,5 @@
 from scipy.stats import binom_test
-
+from scipy.stats import binom
 
 def binom_test_v2(x, n=None, p=0.5, alternative='two-sided'):
     n = np.int_(n)

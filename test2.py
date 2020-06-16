@@ -19,4 +19,8 @@ def t_test(mu1,mu2,std1,std2,n1,n2,dist=t,alternative='two-sided'):
         return p_val
         
 result=df
-result["p_value"] = result.apply(lambda row : t_test(row.Events_B,row.Events_A + row.Events_B,row.Uptime_B/(row.Uptime_A +row.Uptime_B),alternative='greater'), axis=1)
+result["p_value_two_sided"] = result.apply(lambda row : t_test(row.GroupA_mean, row.GroupB_mean, row.GroupA_StdDev, row.GroupB_StdDev, row.GroupA_Count, row.GroupB_Count), axis=1)
+result["p_value"] = result.apply(lambda row : row.p_value_two_sided/2 if(row.GroupB_mean > row.GroupA_mean) else 1-(row.p_value_two_sided/2), axis=1)
+result["p_value"] = result.apply(lambda row : (1- row.p_value) if (row.HigherValueIsBetter == 1) else (row.p_value), axis=1)
+result["Confidence"] = result.apply(lambda row : (1-row.p_value)**.33, axis=1)
+result["Confidence_two_sidex"] = result.apply(lambda row : (1-row.p_value_two_sided)**.33, axis=1)
